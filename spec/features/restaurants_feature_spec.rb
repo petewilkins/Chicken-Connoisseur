@@ -31,4 +31,20 @@ feature 'restaurants' do
       expect(current_path).to eq '/restaurants'
     end
   end
+
+  context 'editing restaurants' do
+    before { Restaurant.create name: 'Sams Chicken', description: 'Bones with a high chance of getting your phone stolen', id: 1 }
+
+    scenario 'let a user edit a restaurant' do
+      visit '/restaurants'
+      click_link 'Edit Sams Chicken'
+      fill_in 'Name', with: 'Sams Kitchen'
+      fill_in 'Description', with: 'Upmarket with a high chance of getting your wallet stolen'
+      click_button 'Update Restaurant'
+      click_link 'Sams Kitchen'
+      expect(page).to have_content('Sams Kitchen')
+      expect(page).to have_content('wallet stolen')
+      expect(current_path).to eq '/restaurants/1'
+    end
+  end
 end
