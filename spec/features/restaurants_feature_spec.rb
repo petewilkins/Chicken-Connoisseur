@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'restaurants' do
   context 'no restaurants have been added' do
     scenario 'should display a prompt to add a restaurant' do
-      visit '/restaurants'
+      sign_up
       expect(page).to have_content 'No restaurants yet'
       expect(page).to have_link 'Add a restaurant'
     end
@@ -31,9 +31,14 @@ feature 'restaurants' do
       expect(current_path).to eq '/restaurants'
     end
 
+    scenario 'user cannot add a restaurant unless signed in' do
+      visit('/restaurants/new')
+      expect(current_path).to eq '/users/sign_in'
+    end
+
     context 'an invalid restaurant' do
       scenario 'does not let you submit a name that is too short' do
-        visit 'restaurants'
+        sign_up
         click_link 'Add a restaurant'
         fill_in 'Name', with: 'KF'
         click_button 'Create Restaurant'
@@ -47,7 +52,7 @@ feature 'restaurants' do
     before { Restaurant.create name: 'Sams Chicken', description: 'Bones with a high chance of getting your phone stolen', id: 1 }
 
     scenario 'let a user edit a restaurant' do
-      visit '/restaurants'
+      sign_up
       click_link 'Edit Sams Chicken'
       fill_in 'Name', with: 'Sams Kitchen'
       fill_in 'Description', with: 'Upmarket with a high chance of getting your wallet stolen'
@@ -63,7 +68,7 @@ feature 'restaurants' do
     before { Restaurant.create name: 'Sams Chicken', description: 'Bones with a high chance of getting your phone stolen' }
 
     scenario 'removes a restaurant when a user clicks a delete link' do
-      visit '/restaurants'
+      sign_up
       click_link 'Delete Sams Chicken'
       expect(page).not_to have_content 'Sams Chicken'
       expect(page).to have_content 'Restaurant deleted successfully'
