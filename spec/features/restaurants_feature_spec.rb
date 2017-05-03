@@ -11,7 +11,7 @@ feature 'restaurants' do
 
   context 'restaurants have been added' do
     before do
-      Restaurant.create(name: 'Sams Chicken')
+      create_restaurant
     end
 
     scenario 'display restaurants' do
@@ -49,10 +49,9 @@ feature 'restaurants' do
   end
 
   context 'editing restaurants' do
-    before { Restaurant.create name: 'Sams Chicken', description: 'Bones with a high chance of getting your phone stolen', id: 1 }
 
     scenario 'let a user edit a restaurant' do
-      sign_up
+      create_restaurant
       click_link 'Edit Sams Chicken'
       fill_in 'Name', with: 'Sams Kitchen'
       fill_in 'Description', with: 'Upmarket with a high chance of getting your wallet stolen'
@@ -60,15 +59,14 @@ feature 'restaurants' do
       click_link 'Sams Kitchen'
       expect(page).to have_content('Sams Kitchen')
       expect(page).to have_content('wallet stolen')
-      expect(current_path).to eq '/restaurants/1'
+      expect(current_path).to eq "/restaurants/#{Restaurant.last.id}"
     end
   end
 
   context 'deleting restaurants' do
-    before { Restaurant.create name: 'Sams Chicken', description: 'Bones with a high chance of getting your phone stolen' }
 
     scenario 'removes a restaurant when a user clicks a delete link' do
-      sign_up
+      create_restaurant
       click_link 'Delete Sams Chicken'
       expect(page).not_to have_content 'Sams Chicken'
       expect(page).to have_content 'Restaurant deleted successfully'

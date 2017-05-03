@@ -8,3 +8,10 @@ def sign_up(email:'roi@makers.com',
   fill_in "Password confirmation", with: password_confirmation
   click_button "Sign up"
 end
+
+def create_restaurant
+  sign_up
+  user = User.first
+  user.restaurants.create(name: "Sams Chicken", description: "Not mexican")
+  visit('/')
+end
